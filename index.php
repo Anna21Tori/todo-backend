@@ -14,21 +14,30 @@
 	
 	$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 	$uri = explode( '/', $uri );
+	$taskId = null;
+	$done = false;
 	if ($uri[1] !== 'api' && $uri[2] !== 'task') {
     		header("HTTP/1.1 404 Not Found");
     		exit();
 	}
 
-
-	$taskId = null;
 	if (isset($uri[3])) {
-    		$taskId = (int) $uri[3];
+		$taskId = (int) $uri[3];
+	}
+
+	if (isset($uri[4])) {
+		if($uri[4] === 'done'){
+			$done = true;
+		}else{
+			header("HTTP/1.1 404 Not Found");
+    		exit();
+		}
 	}
 
 	$requestMethod = $_SERVER["REQUEST_METHOD"];
 
 
-	$controller = new TaskController($dbConnection, $requestMethod, $taskId);
+	$controller = new TaskController($dbConnection, $requestMethod, $taskId, $done);
 	$controller->processRequest();
 
 ?>

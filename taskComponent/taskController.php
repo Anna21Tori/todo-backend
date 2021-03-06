@@ -2,14 +2,16 @@
 	class TaskController{
 		private $dbConnection = null;
 		private $requestMethod;
-    private $taskId;
+        private $taskId;
+        private $done;
 
 		private $taskGateway;
 
- 		public function __construct($dbConnection, $requestMethod, $taskId){
+ 		public function __construct($dbConnection, $requestMethod, $taskId, $done){
         		$this->dbConnection = $dbConnection;
         		$this->requestMethod = $requestMethod;
-        		$this->taskId = $taskId;
+                $this->taskId = $taskId;
+                $this->done = $done;
 
         		$this->taskGateway = new TaskGateway($this->dbConnection);
     		}
@@ -26,8 +28,12 @@
             			case 'POST':
                 			$response = $this->createTaskFromRequest();
                 			break;
-            			case 'PUT':
-                			$response = $this->updateTaskFromRequest($this->taskId);
+                        case 'PUT':
+                            if(!$this->done){
+                                $response = $this->updateTaskFromRequest($this->taskId);
+                            }else{
+                                $response = $this->changeStatusFromPendingToDone($this->taskId);
+                            }
                 			break;
             			case 'DELETE':
                 			$response = $this->deleteTask($this->taskId);
@@ -85,12 +91,23 @@
         return $response;
     }
 
-    private function deleteTask($id){
+    private function changeStatusFromPendingToDone($id){
         $result = $this->taskGateway->find($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->personGateway->delete($id);
+        $result = $this->taskGateway->doneTask($id);
+        $response['status_code_header'] = 'HTTP/1.1 200 OK';
+        $response['body'] = json_encode($result);
+        return $response;
+    }
+
+    private function deleteTask($id){
+        $result = $this->taskGateway->find($id);
+        if (!$result) {
+            return $this->notFoundResponse();
+        }
+        $this->taskGateway->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;

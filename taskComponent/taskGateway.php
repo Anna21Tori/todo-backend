@@ -61,6 +61,19 @@
         }    
     }
 
+    public function doneTask($id){
+        $sql = "UPDATE tasks SET status = 'DONE' WHERE id = :id;";
+        try {
+            $statement = $this->dbConnection->prepare($sql);
+            $statement->execute(array(
+                'id' => (int) $id
+            ));
+            return $this->find($id);
+        } catch (PDOException $e) {
+            exit($e->getMessage());
+        }    
+    }
+
     public function delete($id){
         $sql = "DELETE FROM tasks WHERE id = :id;";
         try {
