@@ -11,3 +11,4 @@ REST API:<br/>
   - get all task (get) - /api/task<br/>
   - get one task with id (get) - /api/task/{:id}<br/>
   - insert new task (post) - /api/task<br/>
+  - update task (put) - /api/task/{:id}<br/>
