@@ -6,3 +6,8 @@ The file should contain following constans and their appropriate values (which a
 
 In order to run server You have to install php server and use following command (port can be any which is free): <br/>
   -php -S 127.0.0.1:4000 -t name-directory
+  
+REST API:<br/>
+  - get all task (get) - /api/task<br/>
+  - get one task with id (get) - /api/task/{:id}<br/>
+  - insert new task (post) - /api/task<br/>
