@@ -22,7 +22,7 @@
 
 	$taskId = null;
 	if (isset($uri[3])) {
-    		$taskId = (int) $uri[2];
+    		$taskId = (int) $uri[3];
 	}
 
 	$requestMethod = $_SERVER["REQUEST_METHOD"];

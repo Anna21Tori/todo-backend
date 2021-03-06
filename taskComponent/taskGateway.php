@@ -8,16 +8,16 @@
 			$this->dbConnection = $dbConnection;
 		}
 
-public function findAll(){
-			$sql = "SELECT * FROM tasks;";
-			 try {
-            			$statement = $this->dbConnection->query($sql);
-            			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            			return $result;
-        		} catch (PDOException $e) {
-            			exit($e->getMessage());
-        		}
-		}
+    public function findAll(){
+		$sql = "SELECT * FROM tasks;";
+		try {
+            	$statement = $this->dbConnection->query($sql);
+            	$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            	return $result;
+        } catch (PDOException $e) {
+            	exit($e->getMessage());
+        }
+	}
     public function find($id){
         $sql = "SELECT * from tasks WHERE id = ?;";
         try {
@@ -46,16 +46,16 @@ public function findAll(){
     }
 
     public function update($id, Array $input){
-        $sql = "UPDATE tasks SET title = :title, date  = :date, status = :status, WHERE id = :id;";
+        $sql = "UPDATE tasks SET title = :title, date  = :date, status = :status WHERE id = :id;";
         try {
             $statement = $this->dbConnection->prepare($sql);
             $statement->execute(array(
                 'id' => (int) $id,
                 'title' => $input['title'],
                 'date'  => $input['date'],
-                'status' => $this->convertToEnum($input['status']),
+                'status' => $input['status'],
             ));
-            return $statement->rowCount();
+            return $this->find($id);
         } catch (PDOException $e) {
             exit($e->getMessage());
         }    

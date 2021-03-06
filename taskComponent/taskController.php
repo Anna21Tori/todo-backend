@@ -71,22 +71,22 @@
     }
       
     private function updateTaskFromRequest($id){
-        $result = $this->personGateway->find($id);
+        $result = $this->taskGateway->find($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
         $input = (array) json_decode(file_get_contents("php://input"), TRUE);
-        if (!$this->validatePerson($input)) {
+        if (!$this->validateTask($input)) {
             return $this->unprocessableEntityResponse();
         }
-        $this->personGateway->update($id, $input);
+        $result = $this->taskGateway->update($id, $input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = null;
+        $response['body'] = json_encode($result);
         return $response;
     }
 
     private function deleteTask($id){
-        $result = $this->personGateway->find($id);
+        $result = $this->taskGateway->find($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
