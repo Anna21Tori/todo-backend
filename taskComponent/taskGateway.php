@@ -8,7 +8,7 @@
 			$this->dbConnection = $dbConnection;
 		}
 
-		public function findAll(){
+public function findAll(){
 			$sql = "SELECT * FROM tasks;";
 			 try {
             			$statement = $this->dbConnection->query($sql);
@@ -37,9 +37,9 @@
             $statement->execute(array(
                 'title' => $input['title'],
                 'date'  => $input['date'],
-                'status' => $input['status'],
+                'status' => $this->convertToEnum($input['status']),
             ));
-            return $statement->rowCount();
+            return $this->find($this->dbConnection->lastInsertId());
         } catch (PDOException $e) {
             exit($e->getMessage());
         }    
@@ -53,7 +53,7 @@
                 'id' => (int) $id,
                 'title' => $input['title'],
                 'date'  => $input['date'],
-                'status' => $input['status'],
+                'status' => $this->convertToEnum($input['status']),
             ));
             return $statement->rowCount();
         } catch (PDOException $e) {
@@ -71,5 +71,13 @@
             exit($e->getMessage());
         }    
     }
+	private function convertToEnum($num){
+		$enum = array(
+			0 => "PENDING",
+			1 => "REJECT",
+			2 => "DONE"
+		);
+		return $enum[$num];
+	}
 	}
 ?>
